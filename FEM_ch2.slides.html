@@ -11906,7 +11906,8 @@ a.anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h1><hr>
-<p><a href="#Problem_1">Problem 1</a><br></p>
+<p><a href="#Problem_1">Problem 1</a><br>
+<a href="#Problem_2">Problem 2</a><br></p>
 
 </div>
 </div>
@@ -12083,7 +12084,294 @@ $$\boxed{f_4 = \frac{-k_3 P(k_1 + k_2)}{k_1 k_2 + k_1 k_3 + k_2 k_3}}$$</p>
 
 </div>
 </div>
-</div></section></section>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="Problem_2"></a></p>
+<h2 id="Problem-2">Problem 2<a class="anchor-link" href="#Problem-2">&#182;</a></h2><hr>
+<p><strong>Problem Statement:</strong> For the spring assemblage shown in Figure P2-2, determine the displacement at node 2 and the forces in each spring element. Also, determine the force $F_3$.<br></p>
+<p><strong>Given:</strong><br>
+$$\delta = 1 in$$
+$$k_1 = k_2 = 500 \frac{lbf}{in}$$</p>
+<p><strong>Find:</strong><br></p>
+<ol>
+<li>$u_2$</li>
+<li>$f^{&lt;1&gt;}$</li>
+<li>$f^{&lt;2&gt;}$</li>
+<li>$f_3$</li>
+</ol>
+<p><strong>Note:</strong></p>
+<ol>
+<li>In an effort to more rapidly generate answers in the future with less derivation, part of this problem will be an introduction to utilizing python, and the sympy module, in order to generate a solution.</li>
+<li>Another opportunity taken here is to confirm the performance of code_aster when simulating these solutions. With that said, a simulation was run, and the nodal displacements and forces stored in the attached csv files. The script for running the simulation is also stored locally and available for review in your favorite text editor or to run on your locally code_aster installation.</li>
+</ol>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Solution:</strong>
+The first step when utilizing python code is to import the necessary modules. In this case we will use sympy which is a symbolic mathematical library. After importing the module, we define and assign values to the variables.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span> <span class="kn">as</span> <span class="nn">sp</span><span class="p">;</span>
+
+<span class="n">k1</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<span class="n">k2</span> <span class="o">=</span> <span class="n">k1</span><span class="p">;</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="p">[</span><span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">u3</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">,</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;k1 k2 u1 u2 u3 f1 f2 f3 d&quot;</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Solution:</strong><br>
+by inspection we can define the stiffness matrix, force vector, and displacement vectors.
+$$\boldsymbol{K} = \begin{bmatrix}k1 &amp; -k1 &amp; 0\\-k1 &amp; k1+k2 &amp; -k2\\0 &amp; -k2 &amp; k2\end{bmatrix}$$<br>
+$$\boldsymbol{F} = \begin{bmatrix}f1\\f2\\f3\end{bmatrix}$$<br>
+$$\boldsymbol{U} = \begin{bmatrix}u1\\u2\\u3\end{bmatrix}$$<br>
+To do this within python we create a Global Matrices with</p>
+<div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">k1</span><span class="p">,</span> <span class="o">-</span><span class="n">k1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">-</span><span class="n">k1</span><span class="p">,</span> <span class="n">k1</span><span class="o">+</span><span class="n">k2</span><span class="p">,</span> <span class="o">-</span><span class="n">k2</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">k2</span><span class="p">,</span> <span class="n">k2</span><span class="p">]]);</span>
+
+<span class="n">F</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">]);</span>
+<span class="n">U</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">u3</span><span class="p">]);</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>yielding the system of equations
+$$ \begin{bmatrix}f_1 \\ f_2 \\ f_3\end{bmatrix} = 
+\begin{bmatrix}k1 &amp; -k1 &amp; 0\\-k1 &amp; k1+k2 &amp; -k2\\0 &amp; -k2 &amp; k2\end{bmatrix}
+\begin{bmatrix}u_1 \\ u_2 \\ u_3\end{bmatrix}$$</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Applying the boundary condition
+$$ \begin{bmatrix}f_1 \\ f_2 \\ f_3\end{bmatrix} =  
+\begin{bmatrix}k1 &amp; -k1 &amp; 0\\-k1 &amp; k1+k2 &amp; -k2\\0 &amp; -k2 &amp; k2\end{bmatrix}
+\begin{bmatrix}0 \\ u_2 \\ \delta\end{bmatrix}$$<br></p>
+<p>Python Code:</p>
+<div class="highlight"><pre><span></span><span class="n">U</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="n">U</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">delta</span><span class="p">;</span>
+</pre></div>
+<p>Note that python starts with an index of 0, so the first row of the displacement matrix is accessed with U[0]</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Substituting in the nodal forces. Keep in mind that it is a force on node 3 which causes the prescribed displacement and a force on node 1 that enforces the boundary condition.
+$$ \begin{bmatrix}f_1 \\ 0 \\ f_3\end{bmatrix} = 
+\begin{bmatrix}k1 &amp; -k1 &amp; 0\\-k1 &amp; k1+k2 &amp; -k2\\0 &amp; -k2 &amp; k2\end{bmatrix}
+\begin{bmatrix}0 \\ u_2 \\ \delta\end{bmatrix}$$<br></p>
+<p>Python Code:</p>
+<div class="highlight"><pre><span></span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>eliminating rows and columns that correspond to $u_1$
+$$ \begin{bmatrix}0 \\ f_3\end{bmatrix} = 
+\begin{bmatrix}k1+k2 &amp; -k2\\-k2 &amp; k2\end{bmatrix}
+\begin{bmatrix}u_2 \\ \delta\end{bmatrix}$$</p>
+<p>Python Code:</p>
+<div class="highlight"><pre><span></span><span class="n">k_red</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span>
+<span class="n">k_red</span><span class="o">.</span><span class="n">row_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">k_red</span><span class="o">.</span><span class="n">col_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="n">f_red</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span>
+<span class="n">f_red</span><span class="o">.</span><span class="n">row_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="n">u_red</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span>
+<span class="n">u_red</span><span class="o">.</span><span class="n">row_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+<p>Note that we don't want to eliminate the global matrix so we make copies of the global matrices and name the <code>*_red</code> and then delete the first row, and column if appropriate, of the copied matrices. Had we simply commanded <code>k_red = K</code> then we would be telling the computer to create a variable named <code>k_red</code> which has it's value stored in the same memory location as <code>K</code>; this would mean that any change done to 'k_red' would also be done to <code>K</code>.</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>solving the first row for $u_2$
+$$ \boxed{u_2 = \frac{k_2 \delta}{k_1 + k_2} = 0.5\ inches}$$<br></p>
+<p>Python Code:</p>
+<div class="highlight"><pre><span></span><span class="n">U</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">solve</span><span class="p">((</span><span class="n">k_red</span><span class="o">*</span><span class="n">u_red</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u2</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</pre></div>
+<p>Note that we simply assigned th solved value to the global $\boldsymbol{U}$ matrix. This code can be read as "solve the 1st row of k_red * u_red for u2 and assign the value to the 2nd row of the global displacement matrix." Note that the solve attribute assumes that the expression being solved is equal to zero. The solve attribute returns an array of values; to retrieve the first value within the array, which corresponds to the value of the solved expression, you end the attribute call with <code>[0]</code>.</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using the now known $u_2$ displacement to solve the full system of equations for $f_1$ &amp; $f_3$
+$$f_3 = -k_2 u_2 + k_2 \delta = 250\ lbf$$<br>
+$$f_1 = -k_1 u_2 = -250 lbf$$<br></p>
+<p>The force in element 2 must withstand the force applied at node 3
+$$\boxed{f_{3x}^{&lt;2&gt;} = -f_3 = -250 lbf}$$
+There is no nodal force applied at node 2 so all of the force in element 3 is transmitted through element 2.
+$$\boxed{f_{2x}^{&lt;1&gt;} = f_{3x}^{&lt;2&gt;} = -250\ lbf}$$</p>
+<p>Python Code:</p>
+<div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">u</span><span class="p">;</span>
+</pre></div>
+<p>The full python code as well as printed results below.</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[83]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">u3</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">,</span> <span class="n">delta</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;u1 u2 u3 f1 f2 f3 delta&quot;</span><span class="p">)</span>
+<span class="n">k1</span> <span class="o">=</span> <span class="mi">500</span><span class="o">*</span><span class="mi">12</span><span class="p">;</span>
+<span class="n">k2</span> <span class="o">=</span> <span class="n">k1</span><span class="p">;</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">]);</span>
+<span class="n">U</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">u3</span><span class="p">]);</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="n">k1</span><span class="p">,</span> <span class="o">-</span><span class="n">k1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="o">-</span><span class="n">k1</span><span class="p">,</span> <span class="n">k1</span><span class="o">+</span><span class="n">k2</span><span class="p">,</span> <span class="o">-</span><span class="n">k2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">k2</span><span class="p">,</span> <span class="n">k2</span><span class="p">]]);</span>
+
+<span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">12</span><span class="p">;</span>
+
+<span class="n">F_reduced</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span>
+<span class="n">F_reduced</span><span class="o">.</span><span class="n">row_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="n">U_reduced</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span>
+<span class="n">U_reduced</span><span class="o">.</span><span class="n">row_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">U_reduced</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="p">;</span>
+
+<span class="n">K_reduced</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">copy</span><span class="p">();</span>
+<span class="n">K_reduced</span><span class="o">.</span><span class="n">row_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">K_reduced</span><span class="o">.</span><span class="n">col_del</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="n">U</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">solve</span><span class="p">((</span><span class="n">K_reduced</span><span class="o">*</span><span class="n">U_reduced</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">U</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">U</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="p">;</span>
+
+<span class="n">F</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">U</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    u2 = </span><span class="si">{:.2f}</span><span class="s2"> inches</span>
+<span class="s2">    F1 = </span><span class="si">{:3.1f}</span><span class="s2"> lbf</span>
+<span class="s2">    F3 = </span><span class="si">{:3.1f}</span><span class="s2"> lbf</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">12</span><span class="p">,</span> <span class="n">F</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">F</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+    u2 = 0.50 inches
+    F1 = -250.0 lbf
+    F3 = 250.0 lbf
+    
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Code Aster Solution:</strong>
+As mentioned previously, this problem can be verified using code_aster which is an FEA solver. Teaching the use of code_aster is outside the scope of this project but the command (.comm) file and the CAD model (.hdf) files are included within this repository. The code that follows merely take csv that was generated by code aster and processes it within this python environment to in order to make easy comparison. The processing of the csv file is required because code aster's "native" units are metric so they must be converted to imperial in order to make comparison with the closed-solution easier.</p>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[99]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">forcesDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;FEM_ch2_p2_nodal_forces.csv&quot;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">dispDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;FEM_ch2_p2_N2_displacement.csv&quot;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">forcesDF</span><span class="p">[</span><span class="s2">&quot;DX_lbf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forcesDF</span><span class="p">[</span><span class="s2">&quot;DX           &quot;</span><span class="p">]</span><span class="o">*</span><span class="mf">0.224809</span><span class="p">;</span>
+<span class="n">dispDF</span><span class="p">[</span><span class="s2">&quot;DX_in&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dispDF</span><span class="p">[</span><span class="s2">&quot;DX          &quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">39.3701</span><span class="p">;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">forcesDF</span><span class="p">[[</span><span class="s2">&quot;NOEUD    &quot;</span><span class="p">,</span><span class="s2">&quot;DX_lbf&quot;</span><span class="p">]]);</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dispDF</span><span class="p">[[</span><span class="s2">&quot;INTITULE         &quot;</span><span class="p">,</span> <span class="s2">&quot;DX_in&quot;</span><span class="p">]])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   NOEUD            DX_lbf
+0  N1        -2.499988e+02
+1  N2        -1.022312e-13
+2  N3         2.500011e+02
+
+
+
+   INTITULE           DX_in
+0  N2 displacement      0.5
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div></section></section>
 </div>
 </div>
 
