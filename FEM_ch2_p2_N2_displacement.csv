@@ -1,7 +1,0 @@
-#
-#--------------------------------------------------------------------------------
-##ASTER 13.04.00 CONCEPT N2_depl CALCULE LE 30/05/2019 A 14:16:14 DE TYPE         
-#TABLE_SDASTER                                                                   
-INTITULE         ,RESU     ,NOM_CHAM         ,NUME_ORDRE   ,INST         ,DX          
-N2 displacement  ,reslin   ,DEPL             ,           1 , 0.00000E+00 , 1.27000E-02
-

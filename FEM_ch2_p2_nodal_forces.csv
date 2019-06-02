@@ -1,9 +1,0 @@
-#
-#--------------------------------------------------------------------------------
-##ASTER 13.04.00 CONCEPT ndl_frcs CALCULE LE 30/05/2019 A 14:16:14 DE TYPE        
-#TABLE_SDASTER                                                                   
-INTITULE         ,NOEUD    ,RESU     ,NOM_CHAM         ,NUME_ORDRE   ,INST         ,ABSC_CURV    ,COOR_X       ,COOR_Y       ,COOR_Z       ,DX           ,DY          
-Nodal Forces     ,N1       ,reslin   ,FORC_NODA        ,           1 , 0.00000E+00 , 0.00000E+00 , 0.00000E+00 , 0.00000E+00 , 0.00000E+00 ,-1.11205E+03 , 0.00000E+00
-Nodal Forces     ,N2       ,reslin   ,FORC_NODA        ,           1 , 0.00000E+00 , 1.00000E+00 , 1.00000E+00 , 0.00000E+00 , 0.00000E+00 ,-4.54747E-13 , 0.00000E+00
-Nodal Forces     ,N3       ,reslin   ,FORC_NODA        ,           1 , 0.00000E+00 , 2.00000E+00 , 2.00000E+00 , 0.00000E+00 , 0.00000E+00 , 1.11206E+03 , 0.00000E+00
-
