@@ -1,0 +1,7 @@
+#
+#--------------------------------------------------------------------------------
+##ASTER 13.04.00 CONCEPT dN5 CALCULE LE 08/06/2019 A 23:26:44 DE TYPE             
+#TABLE_SDASTER                                                                   
+INTITULE         ,NOEUD    ,RESU     ,NOM_CHAM         ,NUME_ORDRE   ,INST         ,ABSC_CURV    ,COOR_X       ,COOR_Y       ,COOR_Z       ,DX           ,DY           ,DZ           ,DRX          ,DRY          ,DRZ         
+N5_displacement  ,N5       ,reslin   ,DEPL             ,           1 , 0.00000E+00 , 0.00000E+00 , 0.00000E+00 , 0.00000E+00 , 1.82880E+00 , 3.87809E-05 , 6.11290E-22 ,-1.13551E-05 ,-1.26344E-22 , 2.57294E-05 , 1.02726E-21
+
