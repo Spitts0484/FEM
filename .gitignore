@@ -1,2 +1,5 @@
 # Ignore the .ipynb_checkpoints files
 *.ipynb_checkpoints
+
+# Ignore the output file directory for code_aster simulations
+*_Files
