@@ -1,0 +1,7 @@
+#
+#--------------------------------------------------------------------------------
+##ASTER 13.04.00 CONCEPT dsplcmnt CALCULE LE 09/06/2019 A 14:35:53 DE TYPE        
+#TABLE_SDASTER                                                                   
+INTITULE         ,NOEUD    ,RESU     ,NOM_CHAM         ,    NUME_ORDRE   ,    INST         ,    ABSC_CURV    ,    COOR_X       ,    COOR_Y       ,    COOR_Z       ,    DX           ,    DY           ,    DZ           ,    DRX          ,    DRY          ,    DRZ         
+N2_displacement  ,N3       ,reslin   ,DEPL             ,               1 ,0.0000000000E+00 ,0.0000000000E+00 ,0.0000000000E+00 ,2.5400000000E+00 ,0.0000000000E+00 ,-8.1033573580E-19 ,7.1824860104E-03 ,0.0000000000E+00 ,0.0000000000E+00 ,0.0000000000E+00 ,4.3198795173E-19
+
