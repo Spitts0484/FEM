@@ -3,3 +3,6 @@
 
 # Ignore the output file directory for code_aster simulations
 *_Files
+
+# Ignore the output from nohup
+*.out
